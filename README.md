@@ -14,3 +14,5 @@ Config.ini example
     [extensions]  
     #files that should remain in the folder
     excluded = png,jpg
+
+You can use [RunAsService](https://github.com/luisperezphd/RunAsService) for Windows to run Sentinel as a service completelly automatically.
