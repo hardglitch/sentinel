@@ -1,3 +1,6 @@
+// hide console window on Windows in release
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use configparser::ini::Ini;
 use std::{path::Path, time};
 use walkdir::WalkDir;
@@ -10,7 +13,7 @@ fn main() {
     let path_str = config.get("system", "path").expect("The Path to the Folder does not set.");
     let path = Path::new(&path_str);
 
-    let period_str = config.get("system", "period").expect("The Path to the Folder does not set.");
+    let period_str = config.get("system", "period").expect("The Period does not set.");
     let period: u64 = period_str.parse().unwrap();
 
     let ext_str = config.get("extensions", "excluded").expect("Extensions not found");
