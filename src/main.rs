@@ -20,10 +20,12 @@ fn main() {
     let exts: Box<Vec<&str>> = Box::new(ext_str.split(",").collect());
 
     loop {
-        for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
-            if entry.path().is_file() && !exts.contains(&entry.path().extension().unwrap().to_str().unwrap()) {
+        for entry in WalkDir::new(path)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|f| f.path().is_file() && !exts.contains(&f.path().extension().unwrap().to_str().unwrap()))
+            {
                 std::fs::remove_file(entry.path()).unwrap();
-            }
         }
         std::thread::sleep(time::Duration::from_secs(period));
     }
