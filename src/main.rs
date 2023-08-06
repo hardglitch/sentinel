@@ -16,6 +16,8 @@ fn main() {
     let period_str = config.get("system", "period").expect("The Period does not set.");
     let period: u64 = period_str.parse().unwrap();
 
+    let mode = config.get("system", "mode");
+
     let ext_str = config.get("extensions", "excluded").expect("Extensions not found");
     let exts: Box<Vec<&str>> = Box::new(ext_str.split(",").collect());
 
@@ -23,10 +25,13 @@ fn main() {
         for entry in WalkDir::new(path)
             .into_iter()
             .filter_map(|e| e.ok())
-            .filter(|f| f.path().is_file() && !exts.contains(&f.path().extension().unwrap().to_str().unwrap()))
+            .filter(|f| f.path().is_file()
+                && (f.path().extension().is_none() || !exts.contains(&f.path().extension().unwrap().to_str().unwrap()))
+            )
             {
                 std::fs::remove_file(entry.path()).unwrap();
         }
+        if mode == Some("once".to_owned()) { break; }
         std::thread::sleep(time::Duration::from_secs(period));
     }
 }
