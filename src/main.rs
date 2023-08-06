@@ -16,7 +16,7 @@ fn main() {
     let period_str = config.get("system", "period").expect("The Period does not set.");
     let period: u64 = period_str.parse().unwrap();
 
-    let mode = config.get("system", "mode").expect("The Mode does not set.");
+    let mode = config.get("system", "mode");
 
     let ext_str = config.get("extensions", "excluded").expect("Extensions not found");
     let exts: Box<Vec<&str>> = Box::new(ext_str.split(",").collect());
@@ -31,7 +31,7 @@ fn main() {
             {
                 std::fs::remove_file(entry.path()).unwrap();
         }
-        if &mode == "once" { break; }
+        if mode == Some("once".to_owned()) { break; }
         std::thread::sleep(time::Duration::from_secs(period));
     }
 }
