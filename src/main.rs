@@ -6,6 +6,7 @@ use std::{path::Path, time};
 use walkdir::WalkDir;
 
 
+#[allow(clippy::unnecessary_filter_map)]
 fn main() {
     let mut config = Ini::new();
     config.load("config.ini").unwrap();
@@ -19,7 +20,12 @@ fn main() {
     let mode = config.get("system", "mode");
 
     let ext_str = config.get("extensions", "excluded").expect("Extensions not found");
-    let exts: Box<Vec<&str>> = Box::new(ext_str.split(",").collect());
+    let exts: Box<Vec<&str>> = Box::new(
+        ext_str
+        .split(',')
+        .filter_map(|s| Some(s.trim()))
+        .collect()
+    );
 
     loop {
         for entry in WalkDir::new(path)
