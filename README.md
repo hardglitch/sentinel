@@ -10,6 +10,8 @@ Config.ini example
     path = path\to\monitored\folder  
     #polling period in seconds
     period = 5  
+    #run only once
+    #mode = once
 
     [extensions]  
     #files that should remain in the folder
