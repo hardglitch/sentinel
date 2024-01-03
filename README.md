@@ -1,4 +1,5 @@
 # sentinel
+
 Deletes unnecessary files from the specified folder.
 
 This App is designed to work in the background.
@@ -9,7 +10,7 @@ Config.ini example
     [system]  
     path = path\to\monitored\folder  
     #polling period in seconds
-    period = 5  
+    period = 5
     #run only once
     #mode = once
 
