@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let exts: Vec<&str> =
         ext_str
         .split(',')
-        .filter_map(|s| Some(s.trim()))
+        .map(|s| s.trim())
         .collect::<Vec<&str>>();
 
     loop {
