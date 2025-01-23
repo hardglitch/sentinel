@@ -1,11 +1,17 @@
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "sentinel"
 version = "0.1.2"
 edition = "2021"
+authors = ["hardglitch"]
 
 [dependencies]
-configparser = "3"
-walkdir = "2"
+configparser = "3.1"
+walkdir = "2.5"
+
+[profile.dev]
+rustflags = ["-Zprint-type-sizes"]
 
 [profile.release]
 strip = true
@@ -13,3 +19,4 @@ opt-level = "s"
 lto = true
 codegen-units = 1
 panic = "abort"
+rustflags = ["-C", "target-cpu=native"]

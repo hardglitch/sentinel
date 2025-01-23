@@ -2,24 +2,23 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use configparser::ini::Ini;
-use std::{path::Path, time};
-use std::error::Error;
+use std::path::Path;
+use std::time::Duration;
 use walkdir::WalkDir;
 
-
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let mut config = Ini::new();
-    config.load("config.ini")?;
+    config.load("config.ini").unwrap();
 
-    let path_str = config.get("system", "path").expect("The Path to the Folder does not set.");
+    let path_str = config.get("system", "path").unwrap_or("./".to_owned());
     let path = Path::new(&path_str);
 
-    let period_str = config.get("system", "period").expect("The Period does not set.");
-    let period: u64 = period_str.parse()?;
+    let period_str = config.get("system", "period").unwrap_or_default();
+    let period: u64 = period_str.parse().unwrap_or_default();
 
     let mode = config.get("system", "mode");
 
-    let ext_str = config.get("extensions", "excluded").expect("Extensions not found");
+    let ext_str = config.get("extensions", "excluded").unwrap_or_default();
     let exts: Vec<&str> =
         ext_str
         .split(',')
@@ -30,16 +29,25 @@ fn main() -> Result<(), Box<dyn Error>> {
         for entry in WalkDir::new(path)
             .into_iter()
             .filter_map(|e| e.ok())
-            .filter(|f| f.path().is_file()
-                && (f.path().extension().is_none() || !exts.contains(&f.path()
-                .extension().unwrap().to_str().unwrap()))
+            .filter(|f|
+                f.path().is_file()
+                    &&
+                (
+                    match f.path().extension() {
+                        Some(ext) => {
+                            let s = ext.to_str().unwrap_or_default();
+                            !exts.contains(&s)
+                        },
+                        None => true
+                    }
+                )
             )
-            {
-                std::fs::remove_file(entry.path())?;
+        {
+            while std::fs::remove_file(entry.path()).is_err() {
+                std::thread::sleep(Duration::from_millis(1));
+            }
         }
         if mode == Some("once".to_owned()) { break; }
-        std::thread::sleep(time::Duration::from_secs(period));
+        std::thread::sleep(Duration::from_secs(period));
     }
-
-    Ok(())
 }
