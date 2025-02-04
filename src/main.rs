@@ -10,24 +10,19 @@ fn main() {
     let mut config = Ini::new();
     config.load("config.ini").unwrap();
 
-    let path_str = config.get("system", "path").unwrap_or("./".to_owned());
-    let path = Path::new(&path_str);
+    let p = config.get("system", "path").unwrap_or("./".to_owned());
+    let path = Path::new(&p);
 
-    let period_str = config.get("system", "period").unwrap_or_default();
-    let period: u64 = period_str.parse().unwrap_or_default();
+    let p = config.get("system", "period").unwrap_or_default();
+    let period = p.parse::<u64>().unwrap_or_default();
 
     let mode = config.get("system", "mode");
 
-    let ext_str = config.get("extensions", "excluded").unwrap_or_default();
-    let exts: Vec<&str> =
-        ext_str
-        .split(',')
-        .map(|s| s.trim())
-        .collect::<Vec<&str>>();
+    let ext = config.get("extensions", "excluded").unwrap_or_default();
+    let exts = ext.split(',').map(|s| s.trim()).collect::<Vec<&str>>();
 
     loop {
-        for entry in WalkDir::new(path)
-            .into_iter()
+        for entry in WalkDir::new(path).into_iter()
             .filter_map(|e| e.ok())
             .filter(|f|
                 f.path().is_file()
