@@ -1,19 +1,22 @@
-# sentinel
+## 🛡️ Sentinel
 
-Deletes unnecessary files from the specified folder.
+**Sentinel** is a lightweight background utility designed to keep your directories clean by automatically removing unwanted files based on your custom rules.
 
-This App is designed to work in the background.
-All settings are stored in `config.ini` along with the Sentinel main file.
 
-Config.ini example
+### `config.ini` Example
 
-    [system]  
-    path = path\to\monitored\folder  
-    #polling period in seconds
-    period = 5
-    #run only once
-    #mode = once
+```ini
+[system]
+# The folder you want Sentinel to monitor
+path = path\to\monitored\folder
 
-    [extensions]  
-    #files that should remain in the folder
-    excluded = png,jpg
+# Polling period in seconds (e.g., 5 for every 5 seconds)
+period = 60
+
+# Set to 'once' to run the cleanup one time and exit
+# mode = once
+
+[extensions]
+# List of file extensions you want to KEEP. 
+# All other files will be deleted.
+excluded = png, jpg, pdf, txt
