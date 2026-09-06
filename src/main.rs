@@ -6,9 +6,9 @@ use std::path::Path;
 use std::time::Duration;
 use walkdir::WalkDir;
 
-fn main() {
+fn main() -> Result<(), String> {
     let mut config = Ini::new();
-    config.load("config.ini").unwrap();
+    config.load("config.ini")?;
 
     let p = config.get("system", "path").unwrap_or("./".to_owned());
     let path = Path::new(&p);
@@ -38,11 +38,14 @@ fn main() {
                 )
             )
         {
-            while std::fs::remove_file(entry.path()).is_err() {
-                std::thread::sleep(Duration::from_millis(1));
+            for _ in 0..10 {
+                if std::fs::remove_file(entry.path()).is_err() {
+                    std::thread::sleep(Duration::from_millis(10));
+                }
             }
         }
         if mode == Some("once".to_owned()) { break; }
         std::thread::sleep(Duration::from_secs(period));
     }
+    Ok(())
 }

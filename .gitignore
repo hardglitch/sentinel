@@ -5,5 +5,4 @@
 !/.github/workflows/
 !/.github/workflows/*.yml
 !.gitignore
-!*.lock
 !*.toml
